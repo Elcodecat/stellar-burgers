@@ -1,21 +1,21 @@
 import { Preloader, OrderInfoUI } from '@ui';
 import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { useSelector } from '@services/store';
 
 import type { TIngredient } from '@utils-types';
 
 export const OrderInfo = (): React.JSX.Element => {
   /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0,
-  };
+  const { number } = useParams<{ number: string }>();
+  const orderData = useSelector((s) => {
+    const inProfile = s.order.orders.find((o) => o.number === Number(number));
+    if (inProfile) return inProfile;
+    return s.feed.orders.find((o) => o.number === Number(number));
+  });
 
-  const ingredients: TIngredient[] = [];
+  const ingredients: TIngredient[] = useSelector((s) => s.ingredients.items);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -26,7 +26,7 @@ export const OrderInfo = (): React.JSX.Element => {
     type TIngredientsWithCount = Record<string, TIngredient & { count: number }>;
 
     const ingredientsInfo = orderData.ingredients.reduce(
-      (acc: TIngredientsWithCount, item) => {
+      (acc: TIngredientsWithCount, item: string) => {
         if (!acc[item]) {
           const ingredient = ingredients.find((ing) => ing._id === item);
           if (ingredient) {
@@ -41,7 +41,7 @@ export const OrderInfo = (): React.JSX.Element => {
 
         return acc;
       },
-      {}
+      {} as TIngredientsWithCount
     );
 
     const total = Object.values(ingredientsInfo).reduce(
