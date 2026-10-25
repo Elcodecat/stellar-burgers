@@ -2,6 +2,12 @@ import { BurgerConstructorUI } from '@ui';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import {
+  selectConstructorItems,
+  selectUser,
+  selectOrderLoading,
+  selectOrderData,
+} from '@services/selectors';
 import { clearConstructor } from '@services/slices/constructorSlice';
 import { createOrder, clearOrder } from '@services/slices/orderSlice';
 import { useDispatch, useSelector } from '@services/store';
@@ -13,14 +19,12 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
   const navigate = useNavigate();
 
   /** TODO: Взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems: TConstructorState = useSelector(
-    (state) => state.burgerConstructor
-  );
+  const constructorItems: TConstructorState = useSelector(selectConstructorItems);
 
-  const orderRequest = useSelector((state) => state.order.loading);
-  const user = useSelector((state) => state.user.user);
+  const orderRequest = useSelector(selectOrderLoading);
+  const user = useSelector(selectUser);
 
-  const orderModalData: TOrder | null = useSelector((state) => state.order.order);
+  const orderModalData: TOrder | null = useSelector(selectOrderData);
 
   const onOrderClick = (): void => {
     if (!constructorItems.bun || orderRequest) return;

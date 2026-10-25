@@ -1,6 +1,7 @@
 import { Preloader } from '@ui';
 import { Navigate, useLocation, type Location } from 'react-router-dom';
 
+import { selectUser, selectIsAuthChecked } from '@services/selectors';
 import { useSelector } from '@services/store';
 
 type ProtectedRouteProps = {
@@ -17,8 +18,8 @@ export const ProtectedRoute = ({
   children,
 }: ProtectedRouteProps): React.JSX.Element => {
   // Берем данные из userSlice
-  const user = useSelector((state) => state.user.user);
-  const isAuthChecked = useSelector((state) => state.user.checked);
+  const user = useSelector(selectUser);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
 
   const location = useLocation();
   const locationState = location.state as TLocationState | null;

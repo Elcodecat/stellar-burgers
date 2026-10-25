@@ -20,6 +20,11 @@ import {
   type Location,
 } from 'react-router-dom';
 
+import {
+  selectIngredients,
+  selectIngredientsLoading,
+  selectIngredientsError,
+} from '@services/selectors';
 import { fetchIngredients } from '@services/slices/ingredientsSlice';
 import { fetchUser } from '@services/slices/userSlice';
 import { useDispatch, useSelector } from '@services/store';
@@ -38,9 +43,9 @@ import styles from './app.module.css';
 const App = (): React.JSX.Element => {
   const dispatch = useDispatch();
 
-  const ingredients: TIngredient[] = useSelector((state) => state.ingredients.items);
-  const isIngredientsLoading = useSelector((state) => state.ingredients.loading);
-  const ingredientsError = useSelector((state) => state.ingredients.error);
+  const ingredients: TIngredient[] = useSelector(selectIngredients);
+  const isIngredientsLoading = useSelector(selectIngredientsLoading);
+  const ingredientsError = useSelector(selectIngredientsError);
 
   useEffect(() => {
     void dispatch(fetchIngredients());
@@ -91,7 +96,7 @@ const AppContent = ({
 };
 
 type TLocationState = {
-  backgroundLocation?: Location;
+  background?: Location;
 };
 
 const RouteComponent = (): React.JSX.Element => {
@@ -99,17 +104,16 @@ const RouteComponent = (): React.JSX.Element => {
   const navigate = useNavigate();
 
   const locationState = location.state as TLocationState | null;
-  const backgroundLocation = locationState?.backgroundLocation;
+  const backgroundLocation = locationState?.background;
 
   const handleClose = (): void => {
     void navigate(-1);
   };
   return (
     <>
-      {' '}
-      <Routes location={backgroundLocation ?? location}>
-        {' '}
-        <Route path="/" element={<ConstructorPage />} />{' '}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+      <Routes location={backgroundLocation || location}>
+        <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
         {/* Защита от авторизованных */}
         <Route
@@ -161,8 +165,8 @@ const RouteComponent = (): React.JSX.Element => {
             </ProtectedRoute>
           }
         />
-        <Route path="/feed/:number" element={<OrderInfo />} />{' '}
-        <Route path="/ingredients/:id" element={<IngredientDetails />} />{' '}
+        <Route path="/feed/:number" element={<OrderInfo />} />
+        <Route path="/ingredients/:id" element={<IngredientDetails />} />
         <Route
           path="/profile/orders/:number"
           element={
@@ -171,29 +175,26 @@ const RouteComponent = (): React.JSX.Element => {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<NotFound404 />} />{' '}
-      </Routes>{' '}
+        <Route path="*" element={<NotFound404 />} />
+      </Routes>
       {backgroundLocation && (
         <Routes>
-          {' '}
           <Route
             path="/ingredients/:id"
             element={
               <Modal title="Детали ингредиента" onClose={handleClose}>
-                {' '}
-                <IngredientDetails />{' '}
+                <IngredientDetails />
               </Modal>
             }
-          />{' '}
+          />
           <Route
             path="/feed/:number"
             element={
               <Modal title="Информация о заказе" onClose={handleClose}>
-                {' '}
-                <OrderInfo />{' '}
+                <OrderInfo />
               </Modal>
             }
-          />{' '}
+          />
           <Route
             path="/profile/orders/:number"
             element={
@@ -203,9 +204,9 @@ const RouteComponent = (): React.JSX.Element => {
                 </Modal>
               </ProtectedRoute>
             }
-          />{' '}
+          />
         </Routes>
-      )}{' '}
+      )}
     </>
   );
 };
