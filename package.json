@@ -19,12 +19,11 @@
     "preview": "vite preview",
     "stylelint": "stylelint \"./src/**/*.css\" --fix",
     "test": "jest",
+    "test:e2e": "playwright test",
     "test:storybook": "test-storybook",
     "storybook:test": "start-server-and-test storybook http://localhost:6006 test-storybook",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "test": "jest",
-    "test:e2e": "playwright test"
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",

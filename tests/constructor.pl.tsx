@@ -25,11 +25,11 @@ test.describe('Функционал конструктора бургеров', 
 
     await page.goto('/');
     // Ждем, пока прогрузятся данные с сервера
-    await expect(page.getByText('Краторная булка N-200i').first()).toBeVisible();
+    await expect(page.getByText('Краторная булка N-200i')).toBeVisible();
 
     // Инициализируем локаторы
-    modal = page.locator('[class*="modal__modal"]');
-    overlay = page.locator('[class*="modal-overlay"]').first();
+    modal = page.getByTestId('modal');
+    overlay = page.getByTestId('modal-overlay');
     cardBun = page.locator('li').filter({ hasText: 'Краторная булка N-200i' });
     cardSauce = page
       .locator('li')
@@ -111,7 +111,7 @@ test.describe('Функционал конструктора бургеров', 
     page,
     context,
   }) => {
-      await test.step('Подготовка моков для авторизации и заказа', async () => {
+    await test.step('Подготовка моков для авторизации и заказа', async () => {
       await page.routeFromHAR(HAR_USER, { url: '**/api/auth/user', update: false });
       await page.routeFromHAR(HAR_ORDERS, { url: '**/api/orders', update: false });
     });
@@ -134,7 +134,7 @@ test.describe('Функционал конструктора бургеров', 
       await page.reload();
       await expect(page.getByText('Краторная булка N-200i').first()).toBeVisible();
       // Имя в шапке появляется после успешного ответа /auth/user
-  await expect(page.getByText('Test User')).toBeVisible();
+      await expect(page.getByText('Test User')).toBeVisible();
     });
 
     await test.step('Сборка бургера', async () => {
